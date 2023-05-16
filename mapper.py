@@ -6,15 +6,8 @@ en_tokenizer = nltk.tokenize.RegexpTokenizer('\w+')
 
 def map_fn(_, line):
     # 标准化处理
-    # 拆分标点
-    line = line.translate(str.maketrans('', '', string.punctuation))
-    # 转小写
-    line = line.lower()
-    # 中文分词
     words = jieba.lcut(line)
-    # 英文分词
-    en_words = en_tokenizer.tokenize(line)
-    words.extend(en_words)
-    # 输出键值对
+    # 将标点符号和空格过滤掉
+    words = [word.lower() for word in words if (word.isalnum() and not word.isspace())]
     for word in set(words):
         yield (word, (doc_id, words.count(word)))
