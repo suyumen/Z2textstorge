@@ -1,36 +1,21 @@
-import re
-
-
-class QueryProcessor:
-
-    def __init__(self, inverted_index):
-        self.inverted_index = inverted_index
-
-    def process_query(self, query):
-        # 标准化查询，如拆分标点、转换为小写、分词等
-        query = query.lower()
-        words = re.findall(r'\w+', query)
-        # 使用倒排索引查找包含查询词的文档列表
-        doc_lists = []
-        for word in words:
-            if word in self.inverted_index:
-                doc_lists.append(self.inverted_index[word])
-        # 对文档列表进行合并和排序，得到最终的搜索结果
-        result = self.merge_and_sort(doc_lists)
-        return result
-
-    def merge_and_sort(self, doc_lists):
-        # 合并文档列表
-        merged_list = []
-        for doc_list in doc_lists:
-            merged_list.extend(doc_list)
-        # 对文档列表按照TF-IDF值进行排序
-        sorted_list = sorted(merged_list, key=lambda x: x[1], reverse=True)
-        # 去除重复的文档ID
-        result = []
-        seen = set()
-        for doc_id, tf_idf in sorted_list:
-            if doc_id not in seen:
-                result.append(doc_id)
-                seen.add(doc_id)
-        return result
+def search(query: str, inverted_index: Dict[str, List[Tuple[int, float]]], N: int) -> List[Tuple[int, float]]:
+    # 对查询字符串进行标准化处理
+    words = standardize_query(query)
+    # 计算查询向量
+    q_tf_idf = {}
+    for word in words:
+        if word in inverted_index:
+            idf = math.log(N / len(inverted_index[word]))
+            q_tf_idf[word] = 1 * idf
+    # 计算余弦相似度
+    scores = {}
+    for word, tf_idf in q_tf_idf.items():
+        for doc_id, doc_tf_idf in inverted_index[word]:
+            if doc_id not in scores:
+                scores[doc_id] = 0.0
+            scores[doc_id] += tf_idf * doc_tf_idf
+    # 排序
+    sorted_scores = [(k, v) for k, v in scores.items()]
+    sorted_scores.sort(key=lambda x: x[1], reverse=True)
+    # 返回结果
+    return sorted_scores

@@ -1,26 +1,14 @@
-import sys
-from collections import defaultdict
+import math
+from typing import List, Tuple
 
-
-def main():
-    # 初始化倒排索引表
-    inverted_index = defaultdict(list)
-
-    # 读取mapper输出的结果，并将相同单词的tf-idf值放在一起
-    for line in sys.stdin:
-        # 获取单词、文件名和tfidf值
-        word, filename, tfidf = line.strip().split("\t")
-
-        # 将tfidf值和文件名拼接成字符串
-        document_tf = "{}:{}".format(filename, tfidf)
-
-        # 向倒排索引表中添加单词及其tfidf值
-        inverted_index[word].append(document_tf)
-
-    # 输出倒排索引表
-    for word, documents in inverted_index.items():
-        print("{}\t{}".format(word, ", ".join(documents)))
-
-
-if __name__ == "__main__":
-    main()
+def reduce_fn(key: str, values: List[Tuple[int, int]], N: int) -> Tuple[str, Tuple[int, float]]:
+    # 计算tf
+    max_tf = max(values, key=lambda x: x[1])[1]
+    tf = [(doc_id, tf / max_tf) for doc_id, tf in values]
+    # 计算idf
+    df = len(tf)
+    idf = math.log(N / df)
+    # 计算tf-idf
+    tf_idf = [(doc_id, tf * idf) for doc_id, tf in tf]
+    # 生成倒排索引表
+    return (key, tuple(tf_idf))

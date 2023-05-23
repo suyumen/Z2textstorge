@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import search_engine
+from search_engine import QueryProcessor
 
 app = Flask(__name__)
 
