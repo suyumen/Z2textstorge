@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
@@ -20,12 +21,18 @@ def crawl(url):
 
     f = open(result_file_name, 'a', encoding='utf-8')
     # 提取当前网页的 URL
-    print("当前网页：", url)
-    f.write("当前网页 "+url+" ")
-
     # 提取文本信息
     text = soup.get_text()
+    # # 定义键值对
+    # doc_id = url
+    # doc_dict = {doc_id: text}
+    
+    # print(doc_dict.encode('utf-8'))
+    # print("当前网页：", url)
+    # f.write("当前网页 "+url+" ")
 
+    
+    
     # 标准化处理文本
     # 去除标点符号
     #text = text.translate(str.maketrans("", "", string.punctuation))
@@ -41,7 +48,7 @@ def crawl(url):
     # 输出处理后的文本数据
     #print(filtered_tokens)
     #f.writelines(filtered_tokens)
-    print(text)
+    print(text.encode('utf-8'))
     f.writelines(text)
     f.write("\n")
     f.flush()
@@ -60,4 +67,7 @@ def crawl(url):
 
 # 设置起始 URL
 start_url = "http://www.xinhuanet.com"
+
+# 打印结果
+
 crawl(start_url)
