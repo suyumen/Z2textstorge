@@ -1,16 +1,34 @@
-# -*- coding: utf-8 -*-
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import string
-# 用于存储已经访问过的 URL，避免重复爬取
-from nltk import word_tokenize
-from nltk.corpus import stopwords
+import os
 
+folder = "txt_files"  # 设置文件夹名称
 visited_urls = set()
-result_file_name = 'result.txt'
 
-def crawl(url):
+def save_text_as_file(url, text, folder):
+    # 创建保存文件的文件夹
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    # 从 URL 中提取有效的文件名
+    filename = url.replace("http://", "")
+    # 替换文件名中的特殊字符
+    valid_chars = "-_.()abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    filename = "".join(c if c in valid_chars else "_" for c in filename)
+    # 添加扩展名
+    filename += ".txt"
+
+    # 构造完整的文件路径
+    filepath = os.path.join(folder, filename)
+
+    # 保存文本内容到文件
+    with open(filepath, "w", encoding="utf-8") as file:
+        file.write(text)
+
+    print(f"已保存文件：{filepath}")
+
+def scrape_jump_pages(url):
     # 发起 HTTP 请求获取网页内容
     response = requests.get(url)
     response.encoding = "utf-8"
@@ -19,39 +37,13 @@ def crawl(url):
     # 使用 BeautifulSoup 解析网页内容
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    f = open(result_file_name, 'a', encoding='utf-8')
     # 提取当前网页的 URL
+    print("当前网页：", url)
+
     # 提取文本信息
     text = soup.get_text()
-    # # 定义键值对
-    # doc_id = url
-    # doc_dict = {doc_id: text}
-    
-    # print(doc_dict.encode('utf-8'))
-    # print("当前网页：", url)
-    # f.write("当前网页 "+url+" ")
 
-    
-    
-    # 标准化处理文本
-    # 去除标点符号
-    #text = text.translate(str.maketrans("", "", string.punctuation))
-    # 转换为小写
-    #text = text.lower()
-    # 分词
-    #tokens = word_tokenize(text)
-
-    # 去除停用词
-    #stop_words = set(stopwords.words('english'))  # 停用词表rd
-    #filtered_tokens = [token for token in tokens if token not in stop_words]
-
-    # 输出处理后的文本数据
-    #print(filtered_tokens)
-    #f.writelines(filtered_tokens)
-    print(text.encode('utf-8'))
-    f.writelines(text)
-    f.write("\n")
-    f.flush()
+    print(text)
 
     # 提取当前网页中的其他 URL
     urls = soup.find_all('a', href=True)
@@ -62,12 +54,12 @@ def crawl(url):
         # 确保只爬取当前网站的 URL，并且没有被访问过
         if absolute_url.startswith("http://www.xinhuanet.com") and absolute_url not in visited_urls:
             visited_urls.add(absolute_url)
-            crawl(absolute_url)
-    f.close()
+            save_text_as_file(absolute_url, text)
+            scrape_jump_pages(absolute_url)
 
-# 设置起始 URL
-start_url = "http://www.xinhuanet.com"
 
-# 打印结果
+# 创建保存页面的目录
+os.makedirs("news_pages", exist_ok=True)
 
-crawl(start_url)
+# 爬取跳转子页面并保存内容
+scrape_jump_pages("http://www.xinhuanet.com")
