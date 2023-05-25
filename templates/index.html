@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索引擎</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+        .header {
+            height: 72px;
+            background-color: #005CAF;
+            display: flex;
+            justify-content: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            line-height: 72px;
+            margin: 0;
+        }
+        .main {
+            margin: 24px auto;
+            width: 800px;
+        }
+        .search-box {
+            margin-top: 32px;
+            display: flex;
+            justify-content: center;
+        }
+        form {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 62px;
+            border-radius: 50px;
+            padding: 8px 24px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px #005CAF;
+        }
+        input[type="text"] {
+            width: 80%;
+            height: 100%;
+            margin: 0;
+            padding: 0 16px;
+            border: none;
+            outline: none;
+            font-size: 20px;
+            font-family: Arial,Helvetical,sans-serif;
+        }
+        input[type="submit"] {
+            width: 20%;
+            height: 100%;
+            margin: 0;
+            background-color: #005CAF;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+        }
+        .result-box {
+            margin-top: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+        }
+        .result {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #E4E4E4;
+            border-radius: 8px;
+            padding: 16px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px #E4E4E4;
+        }
+        .result a {
+            color: #005CAF;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .result p {
+            color: #999999;
+            font-size: 16px;
+            line-height: 24px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>搜索引擎</h1>
+</div>
+<div class="main">
+    <div class="search-box">
+        <form action="/search" method="get">
+            <input type="text" name="q" placeholder="请输入您要搜索的内容">
+            <input type="submit" value="搜索">
+        </form>
+    </div>
+    <div class="result-box">
+    {% for result in results %}
+        <div class="result">
+            <!--<img src="{{result.image_url}}" alt="{{result.title}}">-->
+            <a href="{{result}}">{{result}}</a>
+            <p>{{result.description}}</p>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+</body>
+</html>
