@@ -54,7 +54,7 @@ def scrape_jump_pages(url):
         # 确保只爬取当前网站的 URL，并且没有被访问过
         if absolute_url.startswith("http://www.xinhuanet.com") and absolute_url not in visited_urls:
             visited_urls.add(absolute_url)
-            save_text_as_file(absolute_url, text)
+            save_text_as_file(absolute_url, text,"news_pages")
             scrape_jump_pages(absolute_url)
 
 

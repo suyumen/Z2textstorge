@@ -17,7 +17,8 @@ def read_file(file_path):
 def mapper():
     for line in sys.stdin:
         file_path = line.strip()
-        file_name = file_path.split('/')[-1].split('.')[0]  # 获取文件名
+        #file_name = file_path.split('/')[-1].split('.')[0]  # 获取文件名
+        file_name = file_path.split('/')[-1]
         text = read_file(file_path)  # 读取文件内容并进行标准化处理
 
         # 对文本进行分词，得到词汇列表
