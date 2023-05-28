@@ -1,21 +1,37 @@
-def search(query: str, inverted_index: Dict[str, List[Tuple[int, float]]], N: int) -> List[Tuple[int, float]]:
-    # 对查询字符串进行标准化处理
-    words = standardize_query(query)
-    # 计算查询向量
-    q_tf_idf = {}
+import jieba
+import csv
+
+def do_search(sent, index_file_path):
+    # 分词
+    words = jieba.lcut(sent)
+    # 加载倒排索引表
+    index = load_index(index_file_path)
+    # 找到所有包含搜索参数的条目
+    results = []
     for word in words:
-        if word in inverted_index:
-            idf = math.log(N / len(inverted_index[word]))
-            q_tf_idf[word] = 1 * idf
-    # 计算余弦相似度
-    scores = {}
-    for word, tf_idf in q_tf_idf.items():
-        for doc_id, doc_tf_idf in inverted_index[word]:
-            if doc_id not in scores:
-                scores[doc_id] = 0.0
-            scores[doc_id] += tf_idf * doc_tf_idf
-    # 排序
-    sorted_scores = [(k, v) for k, v in scores.items()]
-    sorted_scores.sort(key=lambda x: x[1], reverse=True)
-    # 返回结果
-    return sorted_scores
+        if word in index:
+            results.extend(index[word])
+    # 按tf-idf值从高到低排序
+    results.sort(key=lambda x: x[2], reverse=True)
+    res = [result[1][:-4] for result in results[:100]]
+    re = ["http://"+re.replace('_', '/') for re in res]
+    
+    print(re)
+    return re
+
+
+def load_index(index_file_path):
+    index = {}
+    with open(index_file_path, 'r', encoding='utf-8-sig') as f:
+        reader = csv.reader(f)
+        next(reader)  # 跳过表头
+        for row in reader:
+            word, doc_name, tf_idf = row
+            tf_idf = float(tf_idf)
+            if word not in index:
+                index[word] = []
+            index[word].append([word, doc_name, tf_idf])
+    return index
+
+# if __name__ == '__main__':
+#     do_search('安徽', 'tf_idf.csv')

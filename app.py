@@ -1,20 +1,23 @@
-from flask import Flask, render_template, request
-from search_engine import QueryProcessor
+
+from typing import List, Dict, Any
+from flask import Flask, request, jsonify, render_template
+from search_engine import do_search
 
 app = Flask(__name__)
+#app.config['JSON_AS_ASCII'] = False
+
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def index() -> Any:
+    return render_template('index.html', results=[])
 
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    if request.method == 'POST':
-        query = request.form['query']
-        results = search_engine.search(query)
-        return render_template('results.html', results=results)
-    else:
-        return render_template('index.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/search')
+def search() -> Any:
+    query = request.args.get('q', '')
+    results = do_search(query, "tf_idf.csv")
+    #print(results)
+    return render_template('index.html', results=results)
+
+if __name__ == 'main':
+    app.run()

@@ -24,6 +24,9 @@ def save_text_as_file(url, text, folder):
 
     # 保存文本内容到文件
     with open(filepath, "w", encoding="utf-8") as file:
+        # 写入URL到第一行
+        file.write(url + "\n")
+        # 写入文本内容从第二行开始
         file.write(text)
 
     print(f"已保存文件：{filepath}")
@@ -43,7 +46,11 @@ def scrape_jump_pages(url):
     # 提取文本信息
     text = soup.get_text()
 
-    print(text)
+    # 过滤不存在的页面和包含"index.html"的页面
+    if "您要访问的页面不存在" in text or "index.html" in url:
+        print("该页面不存在或为索引页面，跳过保存")
+    else:
+        save_text_as_file(url, text, "news_pages")
 
     # 提取当前网页中的其他 URL
     urls = soup.find_all('a', href=True)
@@ -54,9 +61,7 @@ def scrape_jump_pages(url):
         # 确保只爬取当前网站的 URL，并且没有被访问过
         if absolute_url.startswith("http://www.xinhuanet.com") and absolute_url not in visited_urls:
             visited_urls.add(absolute_url)
-            save_text_as_file(absolute_url, text,"news_pages")
             scrape_jump_pages(absolute_url)
-
 
 # 创建保存页面的目录
 os.makedirs("news_pages", exist_ok=True)

@@ -4,6 +4,7 @@
 import sys
 import jieba
 
+
 def read_file(file_path):
     """读取文件内容并将文件内容标准化处理"""
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -17,12 +18,16 @@ def read_file(file_path):
 def mapper():
     for line in sys.stdin:
         file_path = line.strip()
-        #file_name = file_path.split('/')[-1].split('.')[0]  # 获取文件名
-        file_name = file_path.split('/')[-1]
-        text = read_file(file_path)  # 读取文件内容并进行标准化处理
 
+        # file_name = file_path.split('/')[-1].split('.')[0]  # 获取文件名
+
+        file_name = file_path.split('/')[-1]  # 获取文件名
+        text = read_file(file_path)  # 读取文件内容并进行标准化处理
+        stopwords = [line.strip() for line in open(
+            'new_stopwords.txt', 'r', encoding='utf-8').readlines()]
         # 对文本进行分词，得到词汇列表
         words = jieba.lcut(text)
+        words = [word for word in words if word not in stopwords]
         # 统计单词出现次数
         word_count = {}
         for word in words:

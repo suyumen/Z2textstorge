@@ -2,15 +2,12 @@
 # coding:utf-8
 import os
 
-def print_files_in_folder(folder):
-    # 获取目标文件夹下所有文件的路径
-    file_paths = [os.path.join(folder, file) for file in os.listdir(folder) if os.path.isfile(os.path.join(folder, file))]
+# 获取当前文件夹路径
+dir_path = "news_pages"
 
-    # 打印文件路径
-    for file_path in file_paths:
-        print(file_path)
+# 获取当前文件夹下所有文件名
+file_names = os.listdir(dir_path)
 
-# 示例用法
-folder = "C:/Users/zhang'yue'ying/Z2textstorge/news_pages"  # 设置文件夹名称
-
-print_files_in_folder(folder)
+# 打印所有文件名
+for name in file_names:
+    print("C:/Users/zhang'yue'ying/Z2textstorge/news_pages/"+name)
