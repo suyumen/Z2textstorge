@@ -5,19 +5,15 @@ import os
 
 folder = "txt_files"  # 设置文件夹名称
 visited_urls = set()
+file_counter = 1 # 文件计数器
 
 def save_text_as_file(url, text, folder):
+    global file_counter
     # 创建保存文件的文件夹
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    # 从 URL 中提取有效的文件名
-    filename = url.replace("http://", "")
-    # 替换文件名中的特殊字符
-    valid_chars = "-_.()abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    filename = "".join(c if c in valid_chars else "_" for c in filename)
-    # 添加扩展名
-    filename += ".txt"
+    filename = str(file_counter) + ".txt"
 
     # 构造完整的文件路径
     filepath = os.path.join(folder, filename)
@@ -30,6 +26,9 @@ def save_text_as_file(url, text, folder):
         file.write(text)
 
     print(f"已保存文件：{filepath}")
+
+    # 更新文件计数器
+    file_counter += 1
 
 def scrape_jump_pages(url):
     # 发起 HTTP 请求获取网页内容
