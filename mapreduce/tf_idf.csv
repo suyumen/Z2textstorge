@@ -1,0 +1,7 @@
+﻿word,doc_name,doc_url,tf_idf
+老,3,https://blog.csdn.net/yinlu521wang/article/details/99709146lao.html,0.2222222222222222
+老师,3,https://blog.csdn.net/yinlu521wang/article/details/99709146lao.html,0.4444444444444444
+老师,4,https://www.runoob.com/python/python-tuples.html,0.4444444444444444
+师,4,https://www.runoob.com/python/python-tuples.html,0.2222222222222222
+小张,3,https://blog.csdn.net/yinlu521wang/article/details/99709146lao.html,0.4444444444444444
+小张,4,https://www.runoob.com/python/python-tuples.html,0.4444444444444444

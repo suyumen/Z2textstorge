@@ -10,4 +10,4 @@ file_names = os.listdir(dir_path)
 
 # 打印所有文件名
 for name in file_names:
-    print("E:/homework/云计算/Z2textstorge/Z2textstorge/new_pages/"+name)
+    print("C:/Users/zhongyl1/Desktop/Z2textstorge/Z2textstorge/new_pages/"+name)
