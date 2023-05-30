@@ -12,12 +12,11 @@ def do_search(sent, index_file_path):
         if word in index:
             results.extend(index[word])
     # 按tf-idf值从高到低排序
-    results.sort(key=lambda x: x[2], reverse=True)
-    res = [result[1][:-4] for result in results[:100]]
-    re = ["http://"+re.replace('_', '/') for re in res]
-    
-    print(re)
-    return re
+    results.sort(key=lambda x: x[3], reverse=True)
+    print(results)
+    res = [result[2] for result in results[:100]]
+    print(res)
+    return res
 
 
 def load_index(index_file_path):
@@ -26,11 +25,11 @@ def load_index(index_file_path):
         reader = csv.reader(f)
         next(reader)  # 跳过表头
         for row in reader:
-            word, doc_name, tf_idf = row
+            word, doc_name, doc_url, tf_idf = row
             tf_idf = float(tf_idf)
             if word not in index:
                 index[word] = []
-            index[word].append([word, doc_name, tf_idf])
+            index[word].append([word, doc_name, doc_url, tf_idf])
     return index
 
 # if __name__ == '__main__':

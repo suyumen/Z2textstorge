@@ -66,11 +66,10 @@
             gap: 24px;
         }
         .result {
-            width: 320px;
+            width: 1000px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
             border: 1px solid #E4E4E4;
             border-radius: 8px;
             padding: 16px;
@@ -108,8 +107,8 @@
     {% for result in results %}
     <div class="result">
         <!--<img src="{{result.image_url}}" alt="{{result.title}}">-->
-        <a href="{{result}}">{{result}}</a>
-        <p>{{result.description}}</p>
+        <a href="{{result.url}}" target="_blank" rel="noopener">{{result.title}}</a>
+        <p>{{result.text}}</p>
     </div>
     {% endfor %}
     </div>
