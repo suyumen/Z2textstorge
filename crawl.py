@@ -3,12 +3,27 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
 
-folder = "txt_files"  # 设置文件夹名称
+folder = "news_pages"  # 设置文件夹名称
 visited_urls = set()
-file_counter = 1 # 文件计数器
+
+# 读取已爬取的URL记录
+visited_file = "visited_urls.txt"
+if os.path.exists(visited_file):
+    with open(visited_file, "r") as f:
+        visited_urls = set(f.read().splitlines())
+
+def get_last_file_counter(folder):
+    files = os.listdir(folder)
+    if files:
+        last_file = max(files, key=lambda f: int(os.path.splitext(f)[0]))
+        last_counter = int(os.path.splitext(last_file)[0])
+        return last_counter
+    else:
+        return 0
 
 def save_text_as_file(url, text, folder):
-    global file_counter
+    file_counter = get_last_file_counter(folder) + 1  # 从最后一个文件的计数器值加1开始命名
+
     # 创建保存文件的文件夹
     if not os.path.exists(folder):
         os.makedirs(folder)
@@ -26,9 +41,6 @@ def save_text_as_file(url, text, folder):
         file.write(text)
 
     print(f"已保存文件：{filepath}")
-
-    # 更新文件计数器
-    file_counter += 1
 
 def scrape_jump_pages(url):
     # 发起 HTTP 请求获取网页内容
@@ -49,7 +61,7 @@ def scrape_jump_pages(url):
     if "您要访问的页面不存在" in text or "index.html" in url:
         print("该页面不存在或为索引页面，跳过保存")
     else:
-        save_text_as_file(url, text, "news_pages")
+        save_text_as_file(url, text, folder)
 
     # 提取当前网页中的其他 URL
     urls = soup.find_all('a', href=True)
@@ -62,8 +74,9 @@ def scrape_jump_pages(url):
             visited_urls.add(absolute_url)
             scrape_jump_pages(absolute_url)
 
-# 创建保存页面的目录
-os.makedirs("news_pages", exist_ok=True)
-
 # 爬取跳转子页面并保存内容
 scrape_jump_pages("http://www.xinhuanet.com")
+
+# 保存已爬取的URL记录
+with open(visited_file, "w") as f:
+    f.write("\n".join(visited_urls))
