@@ -1,2 +1,5 @@
 # Z2textstorge
-homework so duo
+环境：hadoop，python3.
+init.py 初始化；
+flask run启动；
+

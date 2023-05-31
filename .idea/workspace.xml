@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cdf7caa3-a107-4aa2-bed0-f896adc913a6" name="默认变更列表" comment="">
-      <change afterPath="$PROJECT_DIR$/crawltitle.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawlurl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawl.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new_pages/1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/new_pages/2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/new_pages/3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/new_pages/4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawltitle.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawltitle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/search.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +168,9 @@
       <workItem from="1685276831562" duration="8004000" />
       <workItem from="1685451638470" duration="54000" />
       <workItem from="1685451698363" duration="96000" />
-      <workItem from="1685451798828" duration="578000" />
+      <workItem from="1685451798828" duration="668000" />
+      <workItem from="1685491641772" duration="172000" />
+      <workItem from="1685515259165" duration="240000" />
     </task>
     <servers />
   </component>
