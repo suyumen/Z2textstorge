@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
+import re
 
 folder = "news_pages"  # 设置文件夹名称
 visited_urls = set()
@@ -12,6 +13,7 @@ if os.path.exists(visited_file):
     with open(visited_file, "r") as f:
         visited_urls = set(f.read().splitlines())
 
+
 def get_last_file_counter(folder):
     files = os.listdir(folder)
     if files:
@@ -20,6 +22,7 @@ def get_last_file_counter(folder):
         return last_counter
     else:
         return 0
+
 
 def save_text_as_file(url, text, folder):
     file_counter = get_last_file_counter(folder) + 1  # 从最后一个文件的计数器值加1开始命名
@@ -33,14 +36,16 @@ def save_text_as_file(url, text, folder):
     # 构造完整的文件路径
     filepath = os.path.join(folder, filename)
 
+    # 清理和整理文本内容
+    cleaned_text = re.sub(r'\s+', ' ', text.strip())  # 去除多余的空格和空行
+
     # 保存文本内容到文件
     with open(filepath, "w", encoding="utf-8") as file:
-        # 写入URL到第一行
-        file.write(url + "\n")
-        # 写入文本内容从第二行开始
-        file.write(text)
+        # 写入文件数目、URL和文本内容到第一行
+        file.write(str(file_counter) + "\t" + url + "\t" + cleaned_text)
 
     print(f"已保存文件：{filepath}")
+
 
 def scrape_jump_pages(url):
     # 发起 HTTP 请求获取网页内容
@@ -74,9 +79,8 @@ def scrape_jump_pages(url):
             visited_urls.add(absolute_url)
             scrape_jump_pages(absolute_url)
 
+
 # 爬取跳转子页面并保存内容
 scrape_jump_pages("http://www.xinhuanet.com")
 
 # 保存已爬取的URL记录
-with open(visited_file, "w") as f:
-    f.write("\n".join(visited_urls))

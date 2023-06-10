@@ -1,32 +1,36 @@
+from scapy.all import *
 
-from typing import List, Dict, Any
-from flask import Flask, request, jsonify, render_template
+class Stream:
+    def __init__(self, pkt):
+        self.pkts = [pkt]
+        self.src_ip = pkt[IP].src
+        self.dst_ip = pkt[IP].dst
+        self.sport = pkt.sport
+        self.dport = pkt.dport
+        self.protocol = pkt[IP].proto
+        self.content = [pkt.load.decode(errors='ignore')] if pkt.haslayer('Raw') else []
 
-from crawltitle import crawl_title
-from crawlurl import crawl_text
-from search_engine import do_search
+    def update(self, pkt):
+        self.pkts.append(pkt)
+        if pkt.haslayer('Raw'):
+            self.content.append(pkt.load.decode(errors='ignore'))
+    
 
-app = Flask(__name__)
-#app.config['JSON_AS_ASCII'] = False
-
-
-@app.route('/')
-def index() -> Any:
-    return render_template('index.html', results=[])
-
-
-@app.route('/search')
-def search() -> Any:
-    query = request.args.get('q', '')
-    results = do_search(query, "tf_idf.csv")
-    #print(results)
-    result_with_text = []
-    for result in results:
-        text = crawl_text(result)  # 使用爬虫或其他方式获取文本内容
-        title = crawl_title(result)  # 使用爬虫或其他方式获取网页标题
-        result_with_text.append({'url': result, 'text': text, 'title': title})
-    return render_template('index.html', results=result_with_text)
-
-
-if __name__ == 'main':
-    app.run()
+def parse_pcap(file_name):
+    streams = {}
+    pkts = rdpcap(file_name)
+    for pkt in pkts:
+        for pkt in pkts:
+            if IP in pkt:
+                proto = pkt[IP].proto
+                if proto in [6, 17]:
+                    five_tuple = None
+                    if proto == 6:
+                        five_tuple = (pkt[IP].src, pkt[IP].dst, pkt.sport, pkt.dport, proto)
+                    elif proto == 17:
+                        five_tuple = (pkt[IP].src, pkt[IP].dst, pkt[UDP].sport, pkt[UDP].dport, proto)
+                    if five_tuple in streams:
+                        streams[five_tuple].update(pkt)
+                    else:
+                        streams[five_tuple] = Stream(pkt)
+    return streams

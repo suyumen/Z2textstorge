@@ -1,35 +1,21 @@
+#!/usr/bin/env python
+# coding:utf-8
 import subprocess
-import os
-import csv
 
-# Step 1: 执行爬虫
-subprocess.call(['python', 'crawl.py'])
-
-# Step 2: 数据存储到hadoop
 hadoop_path = '/usr/local/hadoop/bin/hadoop'
-input_dir = '/data/input'
-output_dir = '/data/output'
+local_input = '/usr/zyy/zyy1/news_pages'
+input_dir = '/'
+output_dir = '/output'
+subprocess.call(['python3', 'crawl.py'])
+subprocess.call([hadoop_path, 'fs', '-rm','-r', output_dir])
+subprocess.call(['rm','-r','/usr/zyy/zyy1/index-tf_idf.csv'])
+subprocess.call([hadoop_path, 'fs', '-put', local_input, input_dir])
 
-os.chdir('scraped_files')
-subprocess.call([hadoop_path, 'fs', '-put', '.', input_dir])
-os.chdir('..')
+subprocess.call([hadoop_path, 'jar', '/usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-2.7.1.jar',
+                 '-input', '/news_pages', '-output', output_dir,
+                 '-mapper', 'python3 /usr/zyy/zyy1/mapreduce/mapper.py', '-reducer', 'python3 /usr/zyy/zyy1/mapreduce/reducer.py',
+                 '-file', '/usr/zyy/zyy1/mapreduce/mapper.py', '-file', '/usr/zyy/zyy1/mapreduce/reducer.py','-file', '/usr/zyy/zyy1/mapreduce/new_stopwords.txt'])
+subprocess.call([hadoop_path, 'fs', '-get', '/output/part-00000','/usr/zyy/zyy1/index-tf_idf.csv'])
 
-# Step 3: 创建文件
-with open('/mapreduce/index.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerow(['word', 'doc_name', 'count'])
+subprocess.call(['python3', 'pre.py'])
 
-with open('/mapreduce/tf_idf.csv', 'w') as f:
-    pass
-
-# Step 4: 执行mapreduce
-subprocess.call([hadoop_path, 'jar', 'path/to/hadoop-streaming.jar',
-                 '-input', input_dir, '-output', output_dir,
-                 '-mapper', '/mapreduce/mapper.py', '-reducer', '/mapreduce/reducer.py',
-                 '-file', '/mapreduce/mapper.py', '-file', '/mapreduce/reducer.py'])
-
-# Step 5: 下载文件
-os.makedirs('output', exist_ok=True)
-subprocess.call([hadoop_path, 'fs', '-get', output_dir + '/tf_idf.csv', 'output'])
-
-print("Done!")
